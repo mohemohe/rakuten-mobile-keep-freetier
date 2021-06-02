@@ -1,4 +1,7 @@
 # rakuten-mobile-keep-freetier
+
+[![](https://i.imgur.com/zrKO84G.png)](https://i.imgur.com/zrKO84G.png)
+
 楽天モバイル等の回線に月1回 SMSを送信して契約解除されないようにするやつ
 
 ## 概要
