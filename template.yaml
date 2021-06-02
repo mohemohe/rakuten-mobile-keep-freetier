@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: |-
+  rakuten-mobile-keep-freetier SAM
+
+Parameters:
+  PhoneNumber:
+    Type: String
+    Default: 050-1234-5678
+
+Resources:
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./handler
+      Handler: function.start
+      Runtime: nodejs14.x
+      Tracing: Active
+      MemorySize: 256
+      Timeout: 40
+      Layers:
+        - !Ref Layer
+      Environment:
+        Variables:
+          PHONE_NUMBER: !Ref PhoneNumber
+      Policies:
+        - SNSPublishMessagePolicy:
+            TopicName: '*'
+      Events:
+        Cron:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 0 1 * ? *)
+  Layer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      Description: rakuten-mobile-keep-freetier layer
+      LayerName: rakuten-mobile-keep-freetier-layer
+      ContentUri: ./
+      CompatibleRuntimes:
+        - nodejs14.x
+      RetentionPolicy: Delete
+  LayerPermission:
+    Type: AWS::Lambda::LayerVersionPermission
+    Properties:
+      Action: lambda:GetLayerVersion
+      LayerVersionArn: !Ref Layer
+      Principal: !Ref AWS::AccountId
